@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  mydb:
+     image: mysql
+     container_name: "database_container"
+     environment:
+         MYSQL_DATABASE: "Persons"
+         MYSQL_USER: "admin"
+         MYSQL_PASSWORD: "test"
+         MYSQL_ROOT_PASSWORD: "root"
+     ports:
+     - "3018:3306"
+     volumes:
+     - mydbvol:/var/lib/mysql
+  dockertraining_copose_jonatan_uscanga:
+     image: ${DOCKER_REGISTRY-}dockertraining_copose_jonatan_uscanga
+     container_name: "api_container"
+     build:
+         context: .
+         dockerfile: Dockerfile
+     ports: 
+     - "8091:80"
+     environment: 
+         "ConnectionStrings:PersonDB" : "Server=database_container;Port=3306;Database=Persons;Uid=admin;Pwd=test"
+     depends_on:
+     - mydb
+volumes:
+     mydbvol:
